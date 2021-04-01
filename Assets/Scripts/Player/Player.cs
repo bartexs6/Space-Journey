@@ -21,8 +21,8 @@ class Player : SpaceShip
    void Start()
     {
         hp = 10;
-        speed = 1.6f;
-        maxSpeed = 20;
+        speed = 4.6f;
+        maxSpeed = 80;
         attackDmg = 2;
         UI.updateHP(hp);
 

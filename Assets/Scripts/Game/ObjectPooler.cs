@@ -31,14 +31,14 @@ public class ObjectPooler : MonoBehaviour
     {
         poolDictionary = new Dictionary<string, Queue<GameObject>>();
 
-
+        GameObject bullets = GameObject.Find("Bullets");
         foreach (Pool pool in pools)
         {
             Queue<GameObject> objectPool = new Queue<GameObject>();
 
             for (int i = 0; i < pool.size; i++)
             {
-                GameObject obj = Instantiate(pool.prefab);
+                GameObject obj = Instantiate(pool.prefab, bullets.transform);
                 obj.SetActive(false);
                 objectPool.Enqueue(obj);
             }

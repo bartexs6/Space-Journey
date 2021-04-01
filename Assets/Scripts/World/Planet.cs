@@ -15,6 +15,15 @@ public class Planet : MonoBehaviour
     {
         Sricks += 6;
     }
+    void OnBecameInvisible()
+    {
+        gameObject.GetComponent<CircleCollider2D>().enabled = false;
+    }
+
+    void OnBecameVisible()
+    {
+        gameObject.GetComponent<CircleCollider2D>().enabled = true;
+    }
 
     private void Update()
     {

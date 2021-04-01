@@ -35,18 +35,20 @@ class PlayerMovement : MonoBehaviour
         mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
         // Tymczasowe ladowanie chunkow
+        
+        
 
-        if (System.Math.Abs(playerRigidbody.position.x - savedPositon.x) >= World.chunkSize / 2 || System.Math.Abs(playerRigidbody.position.y - savedPositon.y) >= World.chunkSize / 2)
+        if (System.Math.Abs(playerRigidbody.position.x + savedPositon.x) >= World.chunkSize / 2 || System.Math.Abs(playerRigidbody.position.y + savedPositon.y) >= World.chunkSize / 2)
         {
             chunkLoaded = false;
             savedPositon = playerRigidbody.position;
         }
 
-        if((int)playerRigidbody.position.x % World.chunkSize == 0 && !chunkLoaded)
+        if(System.Math.Abs((int)playerRigidbody.position.x) % World.chunkSize == 0 && !chunkLoaded)
         {
             loadPlayerChunk();
         }
-        else if((int)playerRigidbody.position.y % World.chunkSize == 0 && !chunkLoaded)
+        if(System.Math.Abs((int)playerRigidbody.position.y) % World.chunkSize == 0 && !chunkLoaded)
         {
             loadPlayerChunk();
         }
@@ -62,19 +64,19 @@ class PlayerMovement : MonoBehaviour
 
         if (playerRigidbody.position.x >= 0)
         {
-            mid = new Vector2((int)playerRigidbody.position.x + World.chunkSize, (int)playerRigidbody.position.y);
+            mid = new Vector2(Mathf.Round(((int)playerRigidbody.position.x + World.chunkSize) / 1000) * 1000, Mathf.Round((int)playerRigidbody.position.y / 1000) * 1000);
         }
-        if(playerRigidbody.position.y >= 0)
+        if (playerRigidbody.position.y >= 0)
         {
-           mid = new Vector2((int)playerRigidbody.position.x, (int)playerRigidbody.position.y + World.chunkSize);
+            mid = new Vector2(Mathf.Round((int)playerRigidbody.position.x / 1000) * 1000, Mathf.Round((int)playerRigidbody.position.y / 1000) * 1000);
         }
         if (playerRigidbody.position.x < 0)
         {
-            mid = new Vector2((int)playerRigidbody.position.x - World.chunkSize, (int)playerRigidbody.position.y);
+            mid = new Vector2(Mathf.Round(((int)playerRigidbody.position.x - World.chunkSize) / 1000) * 1000, Mathf.Round((int)playerRigidbody.position.y / 1000) * 1000);
         }
         if (playerRigidbody.position.y < 0)
         {
-            mid = new Vector2((int)playerRigidbody.position.x, (int)playerRigidbody.position.y - World.chunkSize);
+            mid = new Vector2(Mathf.Round((int)playerRigidbody.position.x / 1000) * 1000, Mathf.Round(((int)playerRigidbody.position.y - World.chunkSize) / 1000) * 1000);
         }
 
         int range = World.chunkSize;

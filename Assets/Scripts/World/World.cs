@@ -13,11 +13,9 @@ public class World : MonoBehaviour
     // Nazwa świata
     static string worldName;
     // Rozmiar jednego chunka
-    public static int chunkSize = 200;
+    public static int chunkSize = 1000;
     // Lista chunkow
     static List<Chunk> chunkList = new List<Chunk>();
-    // TYMCZASOWE
-    static GameObject[] Planets;
     
     // Załaduj świat
     public static void LoadWorld()
@@ -29,9 +27,6 @@ public class World : MonoBehaviour
         }
 
         string gameDocumentPath = Manager.getGameDocumentFolder(false);
-
-        // Pobiera liste planet
-        Planets = PlanetsGenerator.PlanetsList;
 
         // Ścieżka do folderu świata
         System.IO.DirectoryInfo worldFolder = System.IO.Directory.CreateDirectory(System.IO.Path.Combine(gameDocumentPath, worldName));
@@ -63,7 +58,7 @@ public class World : MonoBehaviour
     public static void LoadChunk(Vector2 chunk)
     {
        // ID chunka
-       string chunkID = (System.Math.Round((int)chunk.x / (double)chunkSize) * chunkSize) + "I" + (int)(System.Math.Round((int)chunk.y / (double)chunkSize) * chunkSize);
+       string chunkID = (System.Math.Round((int)chunk.x / (double)chunkSize) * chunkSize / 100) + "I" + (int)(System.Math.Round((int)chunk.y / (double)chunkSize) * chunkSize / 100);
 
         // Sciezka do pliku chunka
         string pathString = System.IO.Path.Combine(worldFolderPath, chunkID + ".dat");
@@ -78,40 +73,6 @@ public class World : MonoBehaviour
         }
 
         string previousChunkID = string.Empty;
-
-        Debug.Log(chunkList.Find(i => i.chunkPosition.y <= chunk.y - chunkSize*4));
-
-        if (chunkList.Find(i => i.chunkPosition.y <= chunk.y - chunkSize * 4) != null)
-        {
-            Chunk temp = chunkList.Find(i => i.chunkPosition.y <= chunk.y - chunkSize * 4);
-            temp.DestroyPlanetsInChunk();
-            chunkList.Remove(temp);
-        }
-
-        if (chunkList.Find(i => i.chunkPosition.y >= chunk.y + chunkSize * 4) != null)
-        {
-            Chunk temp = chunkList.Find(i => i.chunkPosition.y >= chunk.y + chunkSize * 4);
-            temp.DestroyPlanetsInChunk();
-            chunkList.Remove(temp);
-        }
-
-        if (chunkList.Find(i => i.chunkPosition.x <= chunk.x - chunkSize * 4) != null)
-        {
-            Chunk temp = chunkList.Find(i => i.chunkPosition.x <= chunk.x - chunkSize * 4);
-            temp.DestroyPlanetsInChunk();
-            chunkList.Remove(temp);
-        }
-
-        if (chunkList.Find(i => i.chunkPosition.x >= chunk.x + chunkSize * 4) != null)
-        {
-            Chunk temp = chunkList.Find(i => i.chunkPosition.x >= chunk.x + chunkSize * 4);
-            temp.DestroyPlanetsInChunk();
-            chunkList.Remove(temp);
-        }
-        /*if (chunkList.Find(i => i.chunkID.Contains(previousChunkID)) != null)
-        {
-            chunkList.Find(i => i.chunkID.Contains(previousChunkID)).planetsInChunk.ForEach(i => Destroy(i));
-        }*/
     }
 
     // Zapisz chunki
@@ -128,17 +89,6 @@ public class World : MonoBehaviour
     // Generowanie chunkow
     static void GenerateChunk(Vector2 chunk, string chunkID)
     {
-        int x = Random.Range((int)chunk.x - chunkSize, (int)chunk.x + chunkSize);
-        int y = Random.Range((int)chunk.y - chunkSize, (int)chunk.y + chunkSize);
-
-        int p = Random.Range(0, Planets.Length);
-
-        Chunk tempChunk = new Chunk(chunkID, chunk);
-
-        GameObject temp = Instantiate(Planets[p], new Vector2(x,y), Quaternion.identity);
-        temp.name = x + "" + y;
-
-        tempChunk.AddPlanetToChunk(temp);
-        chunkList.Add(tempChunk);
+        new Chunk(chunkID, chunk);
     }
 }

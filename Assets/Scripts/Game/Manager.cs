@@ -7,6 +7,8 @@ using UnityEngine;
 /* Manager gry */
 public class Manager : MonoBehaviour
 {
+    public GameObject[] Planets;
+
     // Podczas uruchomienia gry
     void Start()
     {
@@ -16,9 +18,10 @@ public class Manager : MonoBehaviour
         FactionsControler.Initialize();
         // Stwórz pliki gry
         createFiles();
-
+        // Załaduj świat
+        World.LoadWorld();
         // Zmienne sprawdzające poprawność wykonania czynności
-        bool playerCheck, enemyCheck;
+        bool playerCheck, enemyCheck, planetsCheck;
 
         // Spróbuj
         try
@@ -48,11 +51,30 @@ public class Manager : MonoBehaviour
             enemyCheck = false;
         }
 
+        // Spróuj
+        try
+        {
+            // Sprawdza czy wszystko zgadza się z planetami
+            if(Planets.Length <= 0)
+            {
+                throw new Exception();
+            }
+
+            Game.setPlanetsList(Planets);
+            planetsCheck = true;
+        }
+        catch (Exception) // W przeciwnym razie
+        {
+            // Wyświetl błąd
+            Debug.LogError("Couldn't find any planets in PlanetsList (Or other problem)");
+            planetsCheck = false;
+        }
+
         // Zainicjalizuj UI
         bool uiCheck = UI.Initialize();
 
         // Jeżeli coś zawiodło
-        if (!playerCheck || !uiCheck || !enemyCheck)
+        if (!playerCheck || !uiCheck || !enemyCheck || !planetsCheck)
         {
             // Wyświetl błąd
             Debug.LogError("Game crashed");

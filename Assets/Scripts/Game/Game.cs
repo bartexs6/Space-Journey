@@ -9,6 +9,8 @@ class Game
     private static Player Player;
     // Zmienna przechowująca EnemyControler
     private static EnemyControler EnemyControler;
+    // Lista planet dostępnych w grze
+    private static GameObject[] PlanetsList;
 
     // Przypisyanie gracza do zmiennej
     public static void setPlayer(Player player)
@@ -33,6 +35,21 @@ class Game
         return EnemyControler;
     }
 
+    // Przypisywanie planet do zmiennej
+    public static void setPlanetsList(GameObject[] planets)
+    {
+        PlanetsList = new GameObject[planets.Length];
+        for (int i = 0; i < PlanetsList.Length; i++)
+        {
+            PlanetsList[i] = planets[i];
+        }
+    }
+
+    // Pobieranie listy planet dostępnych w grze
+    public static GameObject[] getPlanetsList()
+    {
+        return PlanetsList;
+    }
     // Ukrywanie gracza
     public static void HidePlayer()
     {
