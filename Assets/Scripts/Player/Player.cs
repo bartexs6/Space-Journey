@@ -22,7 +22,7 @@ class Player : SpaceShip
     {
         hp = 10;
         speed = 4.6f;
-        maxSpeed = 80;
+        maxSpeed = 70;
         attackDmg = 2;
         UI.updateHP(hp);
 

@@ -35,20 +35,18 @@ class PlayerMovement : MonoBehaviour
         mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
         // Tymczasowe ladowanie chunkow
-        
-        
 
-        if (System.Math.Abs(playerRigidbody.position.x + savedPositon.x) >= World.chunkSize / 2 || System.Math.Abs(playerRigidbody.position.y + savedPositon.y) >= World.chunkSize / 2)
+        if (System.Math.Abs(playerRigidbody.position.x + savedPositon.x) >= World.chunkSize || System.Math.Abs(playerRigidbody.position.y + savedPositon.y) >= World.chunkSize)
         {
             chunkLoaded = false;
             savedPositon = playerRigidbody.position;
         }
 
-        if(System.Math.Abs((int)playerRigidbody.position.x) % World.chunkSize == 0 && !chunkLoaded)
+        if (System.Math.Abs((int)playerRigidbody.position.x) % World.chunkSize/2 == 0 && !chunkLoaded)
         {
             loadPlayerChunk();
         }
-        if(System.Math.Abs((int)playerRigidbody.position.y) % World.chunkSize == 0 && !chunkLoaded)
+        if (System.Math.Abs((int)playerRigidbody.position.y) % World.chunkSize/2 == 0 && !chunkLoaded)
         {
             loadPlayerChunk();
         }
@@ -60,24 +58,7 @@ class PlayerMovement : MonoBehaviour
     {
         // Załaduj chunki dookoła gracza
 
-        Vector2 mid = playerRigidbody.position;
-
-        if (playerRigidbody.position.x >= 0)
-        {
-            mid = new Vector2(Mathf.Round(((int)playerRigidbody.position.x + World.chunkSize) / 1000) * 1000, Mathf.Round((int)playerRigidbody.position.y / 1000) * 1000);
-        }
-        if (playerRigidbody.position.y >= 0)
-        {
-            mid = new Vector2(Mathf.Round((int)playerRigidbody.position.x / 1000) * 1000, Mathf.Round((int)playerRigidbody.position.y / 1000) * 1000);
-        }
-        if (playerRigidbody.position.x < 0)
-        {
-            mid = new Vector2(Mathf.Round(((int)playerRigidbody.position.x - World.chunkSize) / 1000) * 1000, Mathf.Round((int)playerRigidbody.position.y / 1000) * 1000);
-        }
-        if (playerRigidbody.position.y < 0)
-        {
-            mid = new Vector2(Mathf.Round((int)playerRigidbody.position.x / 1000) * 1000, Mathf.Round(((int)playerRigidbody.position.y - World.chunkSize) / 1000) * 1000);
-        }
+        Vector2 mid = new Vector2(Mathf.Round(((int)playerRigidbody.position.x) / 1000) * 1000, Mathf.Round((int)playerRigidbody.position.y / 1000) * 1000);
 
         int range = World.chunkSize;
 
@@ -87,12 +68,12 @@ class PlayerMovement : MonoBehaviour
             {
                 Vector2 targetChunk = new Vector2(x, y);
                 World.LoadChunk(targetChunk);
+                chunkLoaded = true;
             }
         }
 
-        savedPositon = new Vector2((int)playerRigidbody.position.x, (int)playerRigidbody.position.y);
-        chunkLoaded = true;
-    }
+    savedPositon = new Vector2((int) playerRigidbody.position.x, (int) playerRigidbody.position.y);
+}
 
     public void Aiming()
     {

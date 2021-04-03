@@ -41,5 +41,28 @@ public class Load : MonoBehaviour
     void complete()
     {
         Game.ShowPlayer();
+        LeanTween.moveLocalX(GameObject.Find("Target"), 725, 1);
+        LeanTween.moveLocalY(GameObject.Find("Safe"), 450, 1);
+        LeanTween.size(GameObject.Find("Safe").GetComponent<RectTransform>(), new Vector2(260, 30), 1).setLoopCount(3);
+        Invoke("Safe", 3);
+        Invoke("Target2", 0.2f);
+
+    }
+
+    void Safe()
+    {
+        LeanTween.moveLocalY(GameObject.Find("Safe"), 1000, 2);
+    }
+
+    void Target2()
+    {
+        LeanTween.moveLocalX(GameObject.Find("Target2"), 725, 1);
+        Invoke("TargetComplete", 5);
+    }
+
+    void TargetComplete()
+    {
+        LeanTween.moveLocalX(GameObject.Find("Target"), 1250, 1);
+        LeanTween.moveLocalX(GameObject.Find("Target2"), 1250, 1);
     }
 }

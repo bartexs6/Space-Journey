@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using LitJson;
+using System.IO;
 
 /* Świat */
 public class World : MonoBehaviour
@@ -42,16 +43,6 @@ public class World : MonoBehaviour
             System.IO.File.Create(pathString).Close();
             System.IO.File.WriteAllText(pathString, string.Empty);
         }
-        else
-        {
-            //string loadedInfo = System.IO.File.ReadAllText(pathString);
-            //JsonData worldData = JsonMapper.ToObject(loadedInfo);
-
-            /*for (int i = 0; i < worldData.Count; i++)
-            {
-                chunkAmount = (int)worldData[i]["ChunkAmount"];
-            }*/
-        }
     }
 
     // Załaduj chunki
@@ -61,34 +52,61 @@ public class World : MonoBehaviour
        string chunkID = (System.Math.Round((int)chunk.x / (double)chunkSize) * chunkSize / 100) + "I" + (int)(System.Math.Round((int)chunk.y / (double)chunkSize) * chunkSize / 100);
 
         // Sciezka do pliku chunka
-        string pathString = System.IO.Path.Combine(worldFolderPath, chunkID + ".dat");
-        if (!System.IO.File.Exists(pathString))
+        string pathString = Path.Combine(worldFolderPath, chunkID + ".dat");
+        if (!File.Exists(pathString))
         {
             GenerateChunk(chunk, chunkID);
-            SaveChunk(chunkID);
         }
         else
         {
-            string loadedInfo = System.IO.File.ReadAllText(worldFolderPath + chunkID + ".dat");
-        }
+            string loadedInfo = File.ReadAllText(worldFolderPath + chunkID + ".dat");
 
-        string previousChunkID = string.Empty;
+            JsonData jsonData = JsonMapper.ToObject(loadedInfo);
+
+            Planet temp = new Planet()
+            {
+                name = (string)jsonData[0]["name"],
+                positionX = (int)jsonData[0]["positionX"],
+                positionY = (int)jsonData[0]["positionY"],
+                planetTxtID = (byte)jsonData[0]["planetTxtID"]
+            };
+
+            GenerateChunk(chunk, chunkID, temp);
+        }
     }
 
     // Zapisz chunki
-    public static void SaveChunk(string chunkID)
+    public static void SaveChunk(Chunk chunk)
     {
-        System.IO.File.Create(worldFolderPath + chunkID + ".dat").Close();
+        File.Create(worldFolderPath + chunk.chunkID + ".dat").Close();
 
-        System.IO.File.WriteAllText(worldFolderPath + chunkID + ".dat", "test" + chunkID);
+        List<Planet> _data = new List<Planet>();
+        _data.Add(chunk.planetsInChunk[0]);
 
-        string loadedInfo = System.IO.File.ReadAllText(worldFolderPath + chunkID + ".dat");
+        string json = JsonMapper.ToJson(_data);
+        File.WriteAllText(worldFolderPath + chunk.chunkID + ".dat", json);
+
+        string loadedInfo = System.IO.File.ReadAllText(worldFolderPath + chunk.chunkID + ".dat");
         Debug.Log(loadedInfo);
     }
 
     // Generowanie chunkow
     static void GenerateChunk(Vector2 chunk, string chunkID)
     {
-        new Chunk(chunkID, chunk);
+        if (!chunkList.Exists((i)=>(i.chunkID == chunkID))){
+            Chunk temp = new Chunk(chunkID, chunk);
+            chunkList.Add(temp);
+            SaveChunk(temp);
+        }
+    }
+
+    static void GenerateChunk(Vector2 chunk, string chunkID, Planet planet)
+    {
+        if (!chunkList.Exists((i) => (i.chunkID == chunkID)))
+        {
+            Chunk temp = new Chunk(chunkID, chunk);
+            chunkList.Add(temp);
+            SaveChunk(temp);
+        }
     }
 }

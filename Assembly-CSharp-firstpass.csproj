@@ -301,8 +301,8 @@
     <Reference Include="UnityEditor">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.23f1/Editor/Data/Managed/UnityEditor.dll</HintPath>
     </Reference>
-    <Reference Include="LitJson">
-      <HintPath>C:/nastepnagra/Space Journey/Space-Journey/Assets/Scripts/LitJson.dll</HintPath>
+    <Reference Include="LitJSON">
+      <HintPath>C:/nastepnagra/Space Journey/Space-Journey/Assets/Scripts/LitJSON.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.23f1/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>
