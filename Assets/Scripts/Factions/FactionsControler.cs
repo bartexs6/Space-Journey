@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
 /* Kontroler frakcji */
 public static class FactionsControler
@@ -27,7 +25,7 @@ public static class FactionsControler
             for (int z = 0; z < FactionList.Count; z++)
             {
                 FactionList[i].checkFactions(FactionList[z], 0);
-        }
+            }
         }
     }
 }

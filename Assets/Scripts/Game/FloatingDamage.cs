@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using DG.Tweening;
+
 
 /* UI obra¿eñ */
 public class FloatingDamage : MonoBehaviour
 {
     // Czas wyœwietlania obra¿eñ
-    private float livingTime = 1f;
+    private float livingTime = 2f;
     // Mesh tesktu
     public TextMeshProUGUI txtMesh;
     // Kolor tekstu
@@ -33,11 +35,9 @@ public class FloatingDamage : MonoBehaviour
         float delayTime = 0.4f;
         
         // Animacje
-        LeanTween.cancel(gameObject);
-
         transform.localScale = Vector2.one;
 
-        LeanTween.scale(gameObject, Vector2.one * scaleChange, time).setLoopPingPong(1).setEaseInCubic();       
+        transform.DOScale(Vector2.zero * scaleChange, time).SetLoops(1).SetEase(Ease.Flash, 15, 2);
 
         // Wywo³aj funkcjê Float po okreœlonym czasie
         Invoke("Float", delayTime + time);
@@ -49,8 +49,8 @@ public class FloatingDamage : MonoBehaviour
         float yChange = 2f;
         float moveTime = 0.5f;
 
-        LeanTween.moveY(gameObject, gameObject.transform.position.y + yChange, moveTime);
-        LeanTween.scale(gameObject, Vector3.zero, moveTime).setEaseInExpo();
+        transform.DOMoveY(gameObject.transform.position.y + yChange, moveTime);
+        transform.DOScale(Vector2.zero, moveTime);
     }
 
 

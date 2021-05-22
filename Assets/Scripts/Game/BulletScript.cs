@@ -83,6 +83,12 @@ public class BulletScript : MonoBehaviour, IPooledObject
                     //ParticleSystem effect = Instantiate(HitEffect, transform.position, Quaternion.identity);
                     Disable();
                 }
+                if (collision.GetComponent<Asteroid>() != null)
+                {
+                    collision.transform.GetComponent<Asteroid>().TakeDamage();
+                    //ParticleSystem effect = Instantiate(HitEffect, transform.position, Quaternion.identity);
+                    Disable();
+                }
 
                 break;
 

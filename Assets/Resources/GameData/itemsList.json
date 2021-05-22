@@ -1,0 +1,50 @@
+[
+	{
+		"id": 0,
+		"name": "Iron",
+		"description": "Just iron",
+		"isStackable": false
+	},
+	{
+		"id": 1,
+		"name": "Coal",
+		"description": "Just coal",
+		"isStackable": true
+	},
+	{
+		"id": 2,
+		"name": "Copper",
+		"description": "Just copper",
+		"isStackable": true
+	},
+	{
+		"id": 3,
+		"name": "Gold",
+		"description": "Just gold",
+		"isStackable": true
+	},
+	{
+		"id": 4,
+		"name": "Diamond",
+		"description": "Just diamond",
+		"isStackable": true
+	},
+	{
+		"id": 5,
+		"name": "Platinum",
+		"description": "Just platinium",
+		"isStackable": true
+	},
+	{
+		"id": 6,
+		"name": "Plutonium",
+		"description": "Just plutonium",
+		"isStackable": true
+	},
+	{
+		"id": 7,
+		"name": "Hydrogen",
+		"description": "Just hydrogen",
+		"isStackable": true
+	}
+]

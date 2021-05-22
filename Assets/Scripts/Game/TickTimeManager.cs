@@ -1,4 +1,7 @@
-﻿using System;
+﻿using LitJson;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 /* Ticki */
@@ -10,7 +13,7 @@ public static class TickTimeManager
      */
 
     // Ticki na sekunde. 1/0.1 = 10 tickow/s
-    private const float TICK_MAX = 0.1f;
+    public const float TICK_MAX = 0.1f;
 
     private static GameObject timeManagerGameObject;
     private static int tick;
@@ -36,7 +39,21 @@ public static class TickTimeManager
         // Podczas uruchomienia skryptu
         private void Awake()
         {
-            tick = 0;
+            string pathString = Path.Combine(World.worldFolderPath, "WorldInfo.txt");
+            if (!File.Exists(pathString))
+            {
+                tick = 0;
+                File.Create(World.worldFolderPath + "WorldInfo.txt").Close();
+            }
+            else
+            {
+                string loadedInfo = File.ReadAllText(World.worldFolderPath + "WorldInfo.txt");
+
+                // Przetworz wczytane dane na JSONa
+                JsonData jsonData = JsonMapper.ToObject(loadedInfo);
+                jsonData["tick"] = (jsonData.ContainsKey("tick") == false) ? 0 : jsonData["tick"];
+                tick = (int)jsonData["tick"];
+            }
         }
 
         private void Update()

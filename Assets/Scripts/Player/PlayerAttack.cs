@@ -5,24 +5,21 @@ using UnityEngine;
 class PlayerAttack : MonoBehaviour
 {
     public Transform[] firePoints;
-    public GameObject bullet;
-
-    public GameObject rocketPrefab;
+    public GameObject bullet, rocketPrefab;
 
     public float bulletForce, bulletPush;
 
-    private CameraScript cum;
+    private CameraScript cameraScript;
 
     void Start()
     {
-        cum = Camera.main.GetComponent<CameraScript>();
+        cameraScript = Camera.main.GetComponent<CameraScript>();
     }
 
     public void Skill_Rocket()
     {
         GameObject rocket = Instantiate(rocketPrefab, transform.position, transform.rotation);
-        rocket.GetComponent<RocketScript>().GetSender(tag, Game.getPlayer().getDmg());
-        
+        rocket.GetComponent<RocketScript>().GetSender(tag, Game.getPlayer().getDmg());  
     }
 
     public void PrimaryAttack()
@@ -35,6 +32,6 @@ class PlayerAttack : MonoBehaviour
             Game.getPlayer().getPlayerRigidbody().AddForce(firePoints[i].up * -bulletPush, ForceMode2D.Impulse);
         }
 
-        cum.CameraShake();
+        cameraScript.CameraShake();
     }
 }

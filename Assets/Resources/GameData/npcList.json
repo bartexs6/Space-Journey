@@ -1,0 +1,10 @@
+[
+	{
+		"name": "Terminal",
+		"quests": ["Eksterminacja", "Zabijanie"]
+	},
+	{
+		"name": "Srerminal",
+		"quests": ["Eksploracja", "Rzez"]
+	}
+]

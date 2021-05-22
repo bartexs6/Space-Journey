@@ -1,35 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using DG.Tweening;
+using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Events;
 
 /* ?  */
-public class Tween : MonoBehaviour
+public class Tween
 {
-
-    public UnityEvent onCompleteCallBack;
-
-    public void OnEnable()
+    public async static void notificationAnimation(GameObject notification, int seconds, int id)
     {
-        transform.localScale = new Vector3(0, 0, 0);
-        LeanTween.scale(gameObject, new Vector3(1, 1, 1), 0.3f).setDelay(0.2f).setOnComplete(OnComplete);
-    }
+        notification.transform.DOLocalMoveX(-700, 1);
+        await Task.Delay(System.TimeSpan.FromSeconds(seconds));
+        notification.transform.DOLocalMoveX(700, 1);
 
-    public void OnComplete()
-    {
-        if (onCompleteCallBack != null)
-        {
-            onCompleteCallBack.Invoke();
-        }
-    }
+        await Task.Delay(System.TimeSpan.FromSeconds(1));
 
-    public void OnClose()
-    {
+        UI.notifications.Insert(id, null);
 
-    }
-
-    public void Destroy()
-    {
-        
+        GameObject.Destroy(notification);
     }
 }

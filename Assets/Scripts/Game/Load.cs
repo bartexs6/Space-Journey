@@ -1,68 +1,76 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
+using DG.Tweening;
+using System.Threading.Tasks;
 
-
-// WERSJA WSTEPNA - BRAK KOMENTARZY
+/* Animacje podczas uruchamiania gry */
 public class Load : MonoBehaviour
 {
-
-    // WERSJA WSTEPNA, NWM CZY WGL PRZEJDZIE TAKI POMYSL PZDR
+    public GameObject mainShip;
+    public Image loadBackground;
+    public Material mainShipParticleMat;
 
     void Start()
     {
         Game.HidePlayer();
-
-        GetComponentInChildren<TMP_Text>();
-
-        Hashtable gameStartScalePara = new Hashtable();
-        gameStartScalePara.Add("onComplete", "complete");
-
-        Invoke("animationB", 1);
-        Invoke("animationA", 3);
+        loadAnimations();
     }
 
-    void animationB()
+    // Animacje UI podczas uruchamiania
+    async void loadAnimations()
     {
-        LeanTween.moveLocalY(GameObject.Find("MainShip"), 50, 8);
-        GameObject.Destroy(GameObject.Find("MainShip"), 8);
-    }
 
-    void animationA()
-    {
-        //LeanTween.scale(gameObject.transform.Find("Canvass/Galaxy").gameObject, Vector3.zero, 1).setEaseInExpo();
-        LeanTweenExt.LeanAlphaText(gameObject.transform.Find("Canvass/Galaxy").GetComponent<TMP_Text>(), 0, 1);
-        LeanTweenExt.LeanAlphaText(gameObject.transform.Find("Canvass/GalaxyName").GetComponent<TMP_Text>(), 0, 1);
+        mainShip.transform.DOLocalMoveY(50, 14);
+        Camera.main.gameObject.transform.DOLocalMoveY(0, 3f).OnComplete(() => { Camera.main.GetComponent<CameraScript>().enabled = true; });
+        loadBackground.DOColor(Color.clear, 1f).SetEase(Ease.OutSine, 15, 4);
+
+        await Task.Delay(System.TimeSpan.FromSeconds(3));
+        UI.canvas.transform.Find("GalaxyText/Galaxy").GetComponent<TMP_Text>().DOColor(Color.clear, 1);
+        UI.canvas.transform.Find("GalaxyText/GalaxyName").GetComponent<TMP_Text>().DOColor(Color.clear, 1);
+        Destroy(loadBackground.gameObject);
+        Game.ShowPlayer();
         complete();
 
+        await Task.Delay(System.TimeSpan.FromSeconds(14));
+        foreach (var i in mainShip.GetComponentsInChildren<ParticleSystemRenderer>())
+        {
+            i.material = mainShipParticleMat;
+        }
+        mainShip.transform.DOMoveY(500, 2);
+        GameObject.Destroy(mainShip, 4);
+
+        // Czasowo
+
+        UI.createNotification("Test notyfikacji1", 1);
+        UI.createNotification("Test notyfikacji2" , 5);
+        UI.createNotification("Test notyfikacji3", 9);
+        UI.createNotification("Test notyfikacji4", 2);
+        UI.createNotification("Test notyfikacji5", 5);
+        UI.createNotification("Test notyfikacji6");
+        UI.createNotification("Test notyfikacji7");
+        Invoke("testowe", 3);
     }
 
-    void complete()
+    void testowe()
     {
-        Game.ShowPlayer();
-        LeanTween.moveLocalX(GameObject.Find("Target"), 725, 1);
-        LeanTween.moveLocalY(GameObject.Find("Safe"), 450, 1);
-        LeanTween.size(GameObject.Find("Safe").GetComponent<RectTransform>(), new Vector2(260, 30), 1).setLoopCount(3);
-        Invoke("Safe", 3);
-        Invoke("Target2", 0.2f);
+        UI.createNotification("Test notyfikacji5");
+        Game.getPlayerInventory().addItem(ItemsDatabase.ItemById(0));
+        Game.getPlayerInventory().addItem(ItemsDatabase.ItemById(1));
+
 
     }
 
-    void Safe()
+    async void complete()
     {
-        LeanTween.moveLocalY(GameObject.Find("Safe"), 1000, 2);
-    }
+        await Task.Delay(System.TimeSpan.FromSeconds(1));
+        UI.createNotification("TARGET: EXPLORE THE WORLD");
+        UI.createNotification("GO TO THE MAIN SHIP");
 
-    void Target2()
-    {
-        LeanTween.moveLocalX(GameObject.Find("Target2"), 725, 1);
-        Invoke("TargetComplete", 5);
-    }
+        GameObject.Find("Safe").transform.DOLocalMoveY(450, 1);
+        GameObject.Find("Safe").GetComponent<RectTransform>().DOSizeDelta(new Vector2(260, 30), 1).SetLoops(3);
 
-    void TargetComplete()
-    {
-        LeanTween.moveLocalX(GameObject.Find("Target"), 1250, 1);
-        LeanTween.moveLocalX(GameObject.Find("Target2"), 1250, 1);
+        await Task.Delay(System.TimeSpan.FromSeconds(3));
+        GameObject.Find("Safe").transform.DOLocalMoveY(1000, 2);
     }
 }

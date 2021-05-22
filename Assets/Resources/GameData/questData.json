@@ -1,0 +1,34 @@
+[
+	{
+		"id" : 0,
+		"title": "Eksterminacja",
+		"description": "Kill 5 ships",
+		"experience": 2137,
+		"amount": 5,
+		"missionType": "Kill"
+	},
+	{
+		"id" : 1,
+		"title": "Eksploracja",
+		"description": "Explore 1000000 chunks",
+		"experience": 3,
+		"amount": 177013,
+		"missionType": "Explore"
+	},
+	{
+		"id" : 2,
+		"title": "Zabijanie",
+		"description": "Destroy 5 ships",
+		"experience": 9,
+		"amount": 11,
+		"missionType": "Kill"
+	},
+	{
+		"id" : 3,
+		"title": "Rzez",
+		"description": "Zabij 5 statkow",
+		"experience": 2137,
+		"amount": 5,
+		"missionType": "Kill"
+	}
+]

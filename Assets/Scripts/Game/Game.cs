@@ -1,5 +1,8 @@
-﻿using System.Collections;
+﻿using LitJson;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using UnityEngine;
 
 /* Gra */
@@ -7,10 +10,22 @@ class Game
 {
     // Zmienna przechowująca gracza
     private static Player Player;
+    // Zmienna przechowująca inventory garcza
+    private static PlayerInventory PlayerInventory;
     // Zmienna przechowująca EnemyControler
     private static EnemyControler EnemyControler;
     // Lista planet dostępnych w grze
-    private static GameObject[] PlanetsList;
+    private static Dictionary<PlanetType, GameObject> PlanetsList;
+    // Kamera do planet
+    private static GameObject PlanetCamera;
+    // Manager gry
+    private static Manager Manager;
+
+    // Przypisanie managera do zmiennej
+    public static void setManager(Manager manager)
+    {
+        Manager = manager;
+    }
 
     // Przypisyanie gracza do zmiennej
     public static void setPlayer(Player player)
@@ -18,9 +33,27 @@ class Game
         Player = player;
     }
 
+    // Pobierz managera
+    public static Manager getGameManager()
+    {
+        return Manager;
+    }
+
     // Pobieranie gracza
     public static Player getPlayer() {
         return Player;
+    }
+
+    // Przypisyanie ekwipunku do zmiennej
+    public static void setPlayerInventory(PlayerInventory playerInventory)
+    {
+        PlayerInventory = playerInventory;
+    }
+
+    // Pobieranie ekwipunku gracza
+    public static PlayerInventory getPlayerInventory()
+    {
+        return PlayerInventory;
     }
 
     // Przypisywanie EnemyControlera do zmiennej
@@ -35,20 +68,34 @@ class Game
         return EnemyControler;
     }
 
-    // Przypisywanie planet do zmiennej
-    public static void setPlanetsList(GameObject[] planets)
+    // Przypisyanie kamery do zmiennej
+    public static void setPlanetCamera(GameObject camera)
     {
-        PlanetsList = new GameObject[planets.Length];
-        for (int i = 0; i < PlanetsList.Length; i++)
-        {
-            PlanetsList[i] = planets[i];
-        }
+        PlanetCamera = camera;
+        camera.SetActive(false);
+    }
+    // Pobieranie kamery
+    public static GameObject getPlanetCamera()
+    {
+        return PlanetCamera;
     }
 
-    // Pobieranie listy planet dostępnych w grze
-    public static GameObject[] getPlanetsList()
+    // Przypisywanie planet do zmiennej
+    public static void setPlanetsList(Dictionary<PlanetType, GameObject> planets)
     {
-        return PlanetsList;
+        PlanetsList = planets;
+    }
+
+    // Pobieranie ilości planet danego typu
+    public static int getPlanetsTypeCount(PlanetType planetType)
+    {
+        return PlanetsList.Where(i => i.Key == planetType).Count();
+    }
+
+    // Pobieranie obiektu planety dostępnego w grze
+    public static GameObject getPlanetPrefabsFromType(PlanetType planetType, int textureId)
+    {
+        return PlanetsList.Where(i => i.Key == planetType).Select(i => i.Value).ElementAt(textureId);
     }
     // Ukrywanie gracza
     public static void HidePlayer()
@@ -78,4 +125,22 @@ class Game
         }
     }
         
+    // Zapisywanie gry
+    public static void SaveGame()
+    {
+        foreach (var i in World.chunkList)
+        {
+            World.SaveChunk(i);
+        }
+
+
+        File.Create(World.worldFolderPath + "WorldInfo.txt").Close();
+
+        var _data = new { tick = TickTimeManager.GetTick() };
+
+        string json = JsonMapper.ToJson(_data);
+
+        File.WriteAllText(World.worldFolderPath + "WorldInfo.txt", json);
+
+    }
 }

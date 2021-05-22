@@ -5,7 +5,7 @@ using UnityEngine;
 public class RocketScript : MonoBehaviour
 {
     //Seek for target
-    private int detectRadius = 3;    
+    private int detectRadius = 4;    
     private float disappearTime = 10;   //Time for rocket to find target, otherwise it will explode
     private float seekingTime = 0;
 
@@ -15,13 +15,14 @@ public class RocketScript : MonoBehaviour
     private float followingTime = 0;
     private float speedIncrease = 0.5f;
     private float currentSpeed;
-
     //Exploding 
     int dmgModificator = 3;
     int dmg;
 
     //Circulate
-    private float maxSearchRadius = 20f;
+    //private float circulatingTime = 0;
+    //private float timeToGo = 1; 
+    //private float maxSearchRadius = 20f;
 
     //Basic
     int baseSpeed = 7;
@@ -62,12 +63,13 @@ public class RocketScript : MonoBehaviour
    
     void SeekForTarget()
     {
-        //Movement
+        //Ruch rakiety do przodu
         transform.Translate(transform.up * Time.deltaTime * baseSpeed, Space.World);
 
-        //Looking for targets nearby
+        //Sprawdzanie czy obok rakiety jest jakic cel
         targetCollider = Physics2D.OverlapCircle(transform.position, detectRadius);
 
+        //Zmiana trybu na Śledzenie
         if(targetCollider != null && targetCollider.gameObject.tag == "Enemy")
         {
             seekingTime = 0;
@@ -76,7 +78,7 @@ public class RocketScript : MonoBehaviour
             state = RocketState.following;           
         }
 
-        //Time left
+        //Jeśli rakieta za długo szuka celu, wybucha
         seekingTime += Time.deltaTime;
         if(seekingTime >= disappearTime)
         {
@@ -86,27 +88,33 @@ public class RocketScript : MonoBehaviour
 
     void FollowTarget()
     {
-        Vector2 dir = targetTransform.position - transform.position;
-        transform.Translate(dir.normalized * currentSpeed * Time.deltaTime, Space.World);
-
-        currentSpeed += followingTime * speedIncrease;
-
-        
-        Vector2 lookDirection = targetTransform.position - transform.position;
-        float angle = Mathf.Atan2(lookDirection.y, lookDirection.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.AngleAxis(angle -90, Vector3.forward);
-        
-        if (Vector2.Distance(transform.position, targetTransform.position) <= detectExplosion)
-        {
-            Explode();
-        }
-
+        //Sprawdzanie czy rakieta ma cel do śledzenia
         if(targetTransform == null)
         {
             state = RocketState.seeking;
             followingTime = 0f;
+            return;
         }
 
+        //Podążanie za celem
+        Vector2 dir = targetTransform.position - transform.position;
+        transform.Translate(dir.normalized * currentSpeed * Time.deltaTime, Space.World);
+
+        //Nabieranie predkosci
+        currentSpeed += followingTime * speedIncrease;
+
+        //Celowanie w cel
+        Vector2 lookDirection = targetTransform.position - transform.position;
+        float angle = Mathf.Atan2(lookDirection.y, lookDirection.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.AngleAxis(angle -90, Vector3.forward);
+        
+        //Sprawdzanie czy rakieta jest wystarczajoco blisko celu, jesli tak wybucha
+        if (Vector2.Distance(transform.position, targetTransform.position) <= detectExplosion)
+        {
+            Explode();
+        }       
+
+        //Jesli czas podazania za celem jest zbyt duzy, zacznij szukac nowego celu
         followingTime += Time.deltaTime;
         if(followingTime >= giveUpTime)
         {
@@ -118,6 +126,7 @@ public class RocketScript : MonoBehaviour
     void Circulate()
     {
         //Rakieta bedzie krazyc zanim znajdzie nowego przeciwnika
+
     }
 
 
@@ -125,7 +134,7 @@ public class RocketScript : MonoBehaviour
     {
         // Instantiate some particles
                
-        if(targetTransform.GetComponent<Enemy>() != null)
+        if(targetTransform != null)
         {
             targetTransform.GetComponent<Enemy>().TakeDamage(dmg);
         }

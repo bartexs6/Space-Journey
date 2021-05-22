@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Fighter
   - Enemy
+  - Planet
+  - Terminal
+  - FuelStation
   layers:
   - Default
   - TransparentFX
@@ -16,7 +19,7 @@ TagManager:
   - 
   - 
   - Map
-  - 
+  - Planet
   - 
   - 
   - 

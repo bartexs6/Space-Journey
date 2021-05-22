@@ -53,3 +53,12 @@ The following packages were updated:
   com.unity.2d.spriteshape from version 3.0.14 to 3.0.15
   com.unity.test-framework from version 1.1.20 to 1.1.22
   com.unity.timeline from version 1.2.14 to 1.2.18
+
+=== Mon Apr 12 20:29:17 2021
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.test-framework from version 1.1.22 to 1.1.24
+  com.unity.textmeshpro from version 2.1.1 to 2.1.4

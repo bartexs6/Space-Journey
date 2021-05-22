@@ -12,7 +12,8 @@ class Enemy : SpaceShip
 {
     protected override int hp { get ; set ; }
     protected override float speed { get ; set ; }
-    protected override int maxSpeed { get ; set ; }
+    public override int maxSpeed { get ; set ; }
+    public override int maxHp { get ; set ; }
 
     // Rigidbody przeciwnika
     private Rigidbody2D enemyRigidbody;
@@ -30,7 +31,7 @@ class Enemy : SpaceShip
         // Czyta gameobject z folderu /Resources/Text/DmgDisplay
         dmgDisplay = Resources.Load<GameObject>("Text/DmgDisplay");
 
-        hp = 10;
+        hp = 1;
         attackDmg = 1;
     }
 
@@ -38,11 +39,6 @@ class Enemy : SpaceShip
     public override int getHp()
     {
         return hp;
-    }
-
-    public override int getMaxSpeed()
-    {
-        return maxSpeed;
     }
 
     public override float getSpeed()
@@ -68,8 +64,11 @@ class Enemy : SpaceShip
         // Jeżeli ma mniej niż 0 hp niszczy obiekt za pomocą funkcji DestroyFighter w EnemyControler
         if (hp <= 0)
         {
+            GameEvents.current.EnemyCountTrigger();
+
             Game.getEnemyControler().DestroyFighter(gameObject.GetComponent<Rigidbody2D>());
             Destroy(gameObject);
         }
     }
+
 }

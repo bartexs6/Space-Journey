@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /* Chunki */
@@ -20,10 +22,10 @@ public class Chunk
         chunkGameObject.transform.position = chunkPosition;
         chunkGameObject.AddComponent<GizmosObj>();
 
-        CreatePlanetsInChunk();
+        createObjectsInChunk(this);
     }
 
-    public Chunk(string chunkID, Vector2 chunkPosition, Planet planet)
+    public Chunk(string chunkID, Vector2 chunkPosition, Planet[] planets)
     {
         this.chunkID = chunkID;
         this.chunkPosition = chunkPosition;
@@ -32,44 +34,98 @@ public class Chunk
         chunkGameObject.transform.position = chunkPosition;
         chunkGameObject.AddComponent<GizmosObj>();
 
-        LoadPlanetsToChunk(planet);
+        //LoadPlanetsToChunk(planets);
+
+        loadObjectsToChunk(planets);
     }
+
+    void loadObjectsToChunk(object[] objects)
+    {
+        List<Planet> planetsTemp = new List<Planet>();
+        foreach (var ob in objects)
+        {
+            if(ob.GetType() == typeof(Planet))
+            {
+                planetsTemp.Add((Planet)ob);
+            }
+        }
+
+        LoadPlanetsToChunk(planetsTemp.ToArray());
+    }
+
+    void createObjectsInChunk(Chunk chunk)
+    {
+        CreatePlanetsInChunk(this);
+    }
+
 
     // Tworzenie planet w chunku
-    void CreatePlanetsInChunk()
+    void CreatePlanetsInChunk(Chunk chunk)
     {
-        int x = Random.Range(0, World.chunkSize/2);
-        int y = Random.Range(0, World.chunkSize/2);
+        int numberOfPlanetsInChunk = Random.Range(2, 6);
 
-        GameObject[] planets = Game.getPlanetsList();
+        for (int i = 0; i < numberOfPlanetsInChunk; i++)
+        {
+            if (System.Math.Abs(chunk.chunkPosition.x) <= 1000 && System.Math.Abs(chunk.chunkPosition.y) <= 1000)
+            {
+                Planet planet = Planet.GeneratePlanet(FactionsControler.Factions.Human);
 
-        int randomPlanet = Random.Range(0, planets.Length);
+                // Sprawdzanie czy istnieje planeta w poblizu tej ktora ma byc stworzona
+                foreach (var p in planetsInChunk)
+                {
+                    if (Vector2.Distance(new Vector2(p.positionX, p.positionY), new Vector2(planet.positionX, planet.positionY)) < 20)
+                    {
+                        Debug.LogWarning("There is other planet on the near");
+                        return;
+                    }
+                }
 
-        GameObject temp = GameObject.Instantiate(planets[randomPlanet], chunkGameObject.transform);
-        temp.transform.localPosition = new Vector2(x, y);
-        temp.name = x + "" + y;
+                GameObject tempg = GameObject.Instantiate(Game.getPlanetPrefabsFromType(planet.planetType, planet.planetTxtID), chunkGameObject.transform);
+                tempg.transform.localPosition = new Vector2(planet.positionX, planet.positionY);
 
-        AddPlanetToChunk(temp, (byte)randomPlanet);
+                tempg.GetComponent<PlanetGameObject>().planet = planet;
+                planet.setChunk(this);
+
+                planetsInChunk.Add(planet);
+            }
+            else
+            {
+                Planet planet = Planet.GeneratePlanet();
+
+                // Sprawdzanie czy istnieje planeta w poblizu tej ktora ma byc stworzona
+                foreach (var p in planetsInChunk)
+                {
+                    if (Vector2.Distance(new Vector2(p.positionX, p.positionY), new Vector2(planet.positionX, planet.positionY)) < 20)
+                    {
+                        Debug.LogWarning("There is other planet on the near");
+                        return;
+                    }
+                }
+
+                GameObject tempg = GameObject.Instantiate(Game.getPlanetPrefabsFromType(planet.planetType, planet.planetTxtID), chunkGameObject.transform);
+                tempg.transform.localPosition = new Vector2(planet.positionX, planet.positionY);
+
+                tempg.GetComponent<PlanetGameObject>().planet = planet;
+                planet.setChunk(this);
+
+                planetsInChunk.Add(planet);
+            }
+        }
     }
 
-    void LoadPlanetsToChunk(Planet planet)
+    // Zaladuj planety do chunka
+    void LoadPlanetsToChunk(Planet[] planets)
     {
-        GameObject[] planets = Game.getPlanetsList();
+        foreach (var planet in planets)
+        {
+            GameObject temp = GameObject.Instantiate(Game.getPlanetPrefabsFromType(planet.planetType, planet.planetTxtID), chunkGameObject.transform);
+            temp.transform.localPosition = new Vector2((float)planet.positionX, (float)planet.positionY);
+            temp.name = planet.name;
 
-        GameObject temp = GameObject.Instantiate(planets[planet.planetTxtID], chunkGameObject.transform);
-        temp.transform.localPosition = new Vector2((float)planet.positionX, (float)planet.positionY);
-        temp.name = planet.name;
+            temp.GetComponent<PlanetGameObject>().planet = planet;
+            planet.setChunk(this);
 
-        AddPlanetToChunk(temp, (byte)planet.planetTxtID);
-    }
-
-    public void AddPlanetToChunk(GameObject planet, byte planetTxtID)
-    {
-        Planet temp = new Planet();
-        temp.name = planet.name;
-        temp.positionX = planet.transform.localPosition.x;
-        temp.positionY = planet.transform.localPosition.y;
-        temp.planetTxtID = planetTxtID;
-        planetsInChunk.Add(temp);
+            planetsInChunk.Add(planet);
+        }
     }
 }

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum ShipType { Fighter, Healing, Transporter }
+
 /* Statki */
 abstract class SpaceShip : MonoBehaviour
 {
@@ -12,11 +14,11 @@ abstract class SpaceShip : MonoBehaviour
      * abstrakcyjnej klasy */
 
     protected abstract int hp { get; set; }
+    public abstract int maxHp { get; set; }
     protected abstract float speed { get; set; }
-    protected abstract int maxSpeed { get; set; }
+    public abstract int maxSpeed { get; set; }
 
     public abstract int getHp();
     public abstract float getSpeed();
-    public abstract int getMaxSpeed();
 
 }

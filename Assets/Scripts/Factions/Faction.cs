@@ -39,7 +39,7 @@ public class Faction
     {
         foreach (var i in relations)
         {
-            Debug.Log(name + " to " + i.Key.name + " - " + i.Value);
+            //Debug.Log(name + " to " + i.Key.name + " - " + i.Value);
         }
     }
 }

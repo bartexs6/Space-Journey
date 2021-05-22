@@ -9,6 +9,8 @@ class PlayerMovement : MonoBehaviour
     float speed, maxSpeed;
     Rigidbody2D playerRigidbody;
     Vector2 mousePos;
+    public float accelerationx;
+    public float accelerationy;
 
     bool chunkLoaded = false;
     Vector2 savedPositon;
@@ -17,14 +19,12 @@ class PlayerMovement : MonoBehaviour
     {
         Player = Game.getPlayer();
         speed = Player.getSpeed();
-        maxSpeed = Player.getMaxSpeed();
+        maxSpeed = Player.maxSpeed;
         playerRigidbody = Player.getPlayerRigidbody();
     }
+    // Poruszanie sie gracza
     public void Movement()
     {
-        float accelerationx = Input.GetAxisRaw("Horizontal");
-        float accelerationy = Input.GetAxisRaw("Vertical");
-
         playerRigidbody.AddForce(new Vector2(accelerationx * speed, accelerationy * speed), ForceMode2D.Force);
 
         if (playerRigidbody.velocity.magnitude > maxSpeed)
@@ -34,7 +34,6 @@ class PlayerMovement : MonoBehaviour
 
         mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        // Tymczasowe ladowanie chunkow
 
         if (System.Math.Abs(playerRigidbody.position.x + savedPositon.x) >= World.chunkSize || System.Math.Abs(playerRigidbody.position.y + savedPositon.y) >= World.chunkSize)
         {
@@ -42,22 +41,20 @@ class PlayerMovement : MonoBehaviour
             savedPositon = playerRigidbody.position;
         }
 
-        if (System.Math.Abs((int)playerRigidbody.position.x) % World.chunkSize/2 == 0 && !chunkLoaded)
+        if (System.Math.Abs((int)playerRigidbody.position.x) % World.chunkSize / 2 == 0 && !chunkLoaded)
         {
             loadPlayerChunk();
         }
-        if (System.Math.Abs((int)playerRigidbody.position.y) % World.chunkSize/2 == 0 && !chunkLoaded)
+        if (System.Math.Abs((int)playerRigidbody.position.y) % World.chunkSize / 2 == 0 && !chunkLoaded)
         {
             loadPlayerChunk();
         }
-
-        // ---
     }
 
+    // Ladowanie chunkow
     void loadPlayerChunk()
     {
         // Załaduj chunki dookoła gracza
-
         Vector2 mid = new Vector2(Mathf.Round(((int)playerRigidbody.position.x) / 1000) * 1000, Mathf.Round((int)playerRigidbody.position.y / 1000) * 1000);
 
         int range = World.chunkSize;
@@ -72,9 +69,9 @@ class PlayerMovement : MonoBehaviour
             }
         }
 
-    savedPositon = new Vector2((int) playerRigidbody.position.x, (int) playerRigidbody.position.y);
-}
-
+        savedPositon = new Vector2((int)playerRigidbody.position.x, (int)playerRigidbody.position.y);
+    }
+    // Celowania gracza
     public void Aiming()
     {
         Vector2 lookDir = mousePos - playerRigidbody.position;
@@ -82,5 +79,5 @@ class PlayerMovement : MonoBehaviour
         playerRigidbody.rotation = angle;
     }
 
-    
+
 }
